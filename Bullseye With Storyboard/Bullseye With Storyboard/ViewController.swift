@@ -35,20 +35,64 @@ class ViewController: UIViewController {
     @IBOutlet weak var rangeLabel: UILabel!
     
     @IBAction func checkValue(_ sender: Any) {
-    
+        print(numSlider.value)
+        if (exactSwitch.isOn && Int(numSlider.value) == randomNumber) || (!exactSwitch.isOn && abs(Int(numSlider.value) - randomNumber) < 3) {
+            resultLabel.text = "Bullseye!"
+            range += 50
+            rangeLabel.text = String(range)
+            numSlider.maximumValue = Float(range)
+            highScore.text = String(max(hScore, level))
+            level += 1
+            currentLevel.text = String(level)
+            numSlider.setValue(Float(range / 2), animated: false)
+            randomNumber = Int(arc4random_uniform(UInt32(range + 1)))
+            numLabel.text = String(randomNumber)
+//            resultLabel.isHidden = true
+        } else {
+            resultLabel.text = "Miss!"
+        }
+        resultLabel.isHidden = false
+        playAgainButton.isHidden = false
     }
     
     @IBAction func playAgain(_ sender: Any) {
-
+        numSlider.setValue(50.0, animated: false)
+        randomNumber = Int(arc4random_uniform(101))
+        numLabel.text = String(randomNumber)
+        resultLabel.isHidden = true //must reappear next time it is checked ^
+        playAgainButton.isHidden = true
         
+        range = 100
+        rangeLabel.text = String(range)
+        numSlider.maximumValue = Float(range)
+            
+        if level > hScore && level != 1 {
+            hScore += 1
+            highScore.text = String(hScore)
+        }
+        
+        level = 1
+        currentLevel.text = String(level)
     }
     
     @IBAction func sliderValueChanged(_ sender: Any) {
-        
+
     }
+    
+    var randomNumber = 0
+    var range = 100
+    var level = 1
+    var hScore = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        randomNumber = Int(arc4random_uniform(101))
+                        numLabel.text = String(randomNumber)
+        
+        // Exercise 2E
+        rangeLabel.text = String(range)
+        currentLevel.text = String(level)
+        highScore.text = String(hScore)
     }
 
 }
